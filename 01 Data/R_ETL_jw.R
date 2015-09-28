@@ -7,7 +7,7 @@ df <- read.csv(file_path, stringsAsFactors = FALSE)
 # Replace "." (i.e., period) with "_" in the column names.
 names(df) <- gsub("\\.+", "_", names(df))
 
-#str(df) # Uncomment this and  run just the lines to here to get column types to use for getting the list of measures.
+str(df) # Uncomment this and  run just the lines to here to get column types to use for getting the list of measures.
 
 measures <- c("Disease", "County", "Sex")
 
@@ -30,13 +30,7 @@ if( length(measures) > 1 || ! is.na(dimensions)) {
 }
 
 library(lubridate)
-# Fix date columns, this needs to be done by hand because | needs to be correct.
-#                                                        \_/
-df$Order_Date <- gsub(" [0-9]+:.*", "", gsub(" UTC", "", mdy(as.character(df$Order_Date), tz="UTC")))
-df$Ship_Date  <- gsub(" [0-9]+:.*", "", gsub(" UTC", "", mdy(as.character(df$Ship_Date),  tz="UTC")))
 
-# The following is an example of dealing with special cases like making state abbreviations be all upper case.
-# df["State"] <- data.frame(lapply(df["State"], toupper))
 
 # Get rid of all characters in measures except for numbers, the - sign, and period.dimensions
 if( length(measures) > 1 || ! is.na(measures)) {
