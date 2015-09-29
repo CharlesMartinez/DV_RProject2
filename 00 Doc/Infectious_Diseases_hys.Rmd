@@ -1,0 +1,22 @@
+---
+title: "Infectious Disease Cases by County, Year, and Sex from 2001 to 2014 "
+date: "September 28, 2015"
+author: Charles Martinez (cmm5627), Happy Situ (hys82), Jenna Webb (jnw653)
+output: html_document
+---
+To retrieve the data from the database:
+```{r}
+source("../01 Data/Infectious_Diseases_hys.R", echo = FALSE)
+```
+
+Print out a summary of the Infectious Diseases database:
+```{r}
+summary(df)
+```
+
+Head of the dataframe:
+```{r}
+head(df)
+```
+
+
