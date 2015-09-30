@@ -6,7 +6,7 @@ output: html_document
 ---
 To retrieve the data from the database:
 ```{r}
-source("../01 Data/Infectious_Diseases_hys.R", echo = FALSE)
+source("../01 Data/Infectious_Diseases.R", echo = FALSE)
 ```
 
 Print out a summary of the Infectious Diseases database:
@@ -17,6 +17,14 @@ summary(df)
 Head of the dataframe:
 ```{r}
 head(df)
+```
+
+```{r}
+source("../02 Data Wrangling/Data_Wrangling_hys.R", echo=TRUE)
+```
+
+```{r}
+source("../02 Data Wrangling/Data_Wrangle1_jnw.R", echo = TRUE)
 ```
 
 

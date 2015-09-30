@@ -2,8 +2,8 @@ require("jsonlite")
 require("RCurl")
 # Change the USER and PASS below to be your UTEid
 # Change the USER and PASS below to be your UTEid
-df <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where SEX NOT IN (\'Total\') and COUNTY= \'San Francisco\'"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_hys82', PASS='orcl_hys82', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))
-df
+df <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where COUNT < 15 and SEX NOT IN (\'Total\') and COUNTY= \'San Francisco\'"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_hys82', PASS='orcl_hys82', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))
+
 require(extrafont)
 ggplot() + 
   coord_cartesian() + 
