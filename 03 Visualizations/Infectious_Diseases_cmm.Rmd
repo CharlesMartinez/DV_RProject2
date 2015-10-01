@@ -4,16 +4,7 @@ author: "cm"
 date: "October 1, 2015"
 output: html_document
 ---
-'''{r}
+```{r}
 source("../01 Data/INFECTIOUS_DISEASES_cm.R", echo=TRUE)
-summary(df)
-'''
-require("jsonlite")
-require("RCurl")
-require("ggplot2")
-require("dplyr")
-
-df_A <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where COUNTY NOT IN (\'California\')"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_cmm5627', PASS='orcl_cmm5627', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
-
-require(extrafont)
-df_A %>% select(DISEASE, COUNTY, COUNT) %>% filter(DISEASE == "Scombroid Fish Poisoning" | DISEASE == "Paralytic Shellfish Poisoning") %>% ggplot(aes(x = COUNTY, y = COUNT, color = DISEASE)) + ggtitle("Paralytic Shellfish and Scromboid Fish Poisonings in California Counties") + geom_point(position = "jitter") + coord_flip()
+summary(df_A)
+```
