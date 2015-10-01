@@ -76,6 +76,11 @@ source("../01 Data/Infectious_Diseases.R")
 summary(df)
 ```
 
+Here is a subset of our data:
+```{r}
+head(df)
+```
+
 ###First plot:
 For the first plot, this is what the call to the Oracle database looked like:
 ```
