@@ -5,9 +5,9 @@ date: "September 30, 2015"
 output: html_document
 ---
 
-For this project, we found a set of data that listed cases of different infectious dieases in various counties in California, as well as the total population of each county. It included how many males and females were infected per year, as well as the total number of infections per county per year. 
+For this project, we found a set of data that listed cases of different infectious dieases in various counties in California, as well as the total population of each county. It included how many males and females were infected per year, as well as the total number of infections per county per year.   
 
-This is the code that we used to be able to put the data into an Oracle database:
+This is the code that we used to be able to put the data into an Oracle database:  
 ```
 setwd("C:/Users/jenna_000/Jennas_Stuff/UT/DataVisualization/DV_RProject2/01 Data")
 
@@ -69,33 +69,34 @@ sql <- paste(sql, ");")
 cat(sql)
 ```
 
-Here is a summary of our data:
+Here is a summary of our data:  
 
 ```{r, echo = FALSE}
 source("../01 Data/Infectious_Diseases.R")
 summary(df)
 ```
 
-Here is a subset of our data:
+Here is a subset of our data:  
 ```{r}
 head(df)
 ```
 
 ###First plot:
-For the first plot, this is what the call to the Oracle database looked like:
+For the first plot, this is what the call to the Oracle database looked like:  
 ```
 df_jnw <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where SEX = \'Female\' or SEX = \'Male\'"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_jnw653', PASS='orcl_jnw653', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
 ```
 ######Note that only the 'Male' and 'Female' sexes were included, and not 'Total'.
 
-This is the code that was used to generate the first plot:
+This is the code that was used to generate the first plot:  
 ```
 df_jnw %>% select(DISEASE, YEAR, COUNT, SEX) %>% filter(DISEASE == "Gonorrhea" | DISEASE == "Chlamydia" | DISEASE == "HIV") %>% ggplot(aes(x = YEAR, y = COUNT, color = DISEASE)) + geom_point(position = "jitter") + facet_wrap(~SEX) + theme(axis.text.x=element_text(angle=70, size = 10, vjust=0.5))
 ```
-And this is the output:
+And this is the output:  
 ```{r}
 source("../02 Data Wrangling/Data_Wrangle1_jnw.R", echo = TRUE)
 ```
+  
 This plot looks at only the STI's chlamydia, gonorrhea, and HIV, for the years 2001-2014. There are two separate plots for males and females, and all of the counties in California are included. It is suggested that chlamydia has risen significantly over the years for both males and females, while gonorrhea and HIV have remained more steady, with gonorrhea rising slightly more than females over the years. It also appears that more females than males had chlamydia, but the numbers appeared about the same for the other two diseases.
 
 ###Second plot:
