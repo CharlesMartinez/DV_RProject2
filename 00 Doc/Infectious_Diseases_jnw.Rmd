@@ -71,13 +71,12 @@ cat(sql)
 
 Here is a summary of our data:
 
-```{r}
+```{r, echo = FALSE}
 source("../01 Data/Infectious_Diseases.R")
 summary(df)
 ```
 
-### First plot:
-
+###First plot:
 For the first plot, this is what the call to the Oracle database looked like:
 ```
 df_jnw <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where SEX = \'Female\' or SEX = \'Male\'"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_jnw653', PASS='orcl_jnw653', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
@@ -89,8 +88,12 @@ This is the code that was used to generate the first plot:
 df_jnw %>% select(DISEASE, YEAR, COUNT, SEX) %>% filter(DISEASE == "Gonorrhea" | DISEASE == "Chlamydia" | DISEASE == "HIV") %>% ggplot(aes(x = YEAR, y = COUNT, color = DISEASE)) + geom_point(position = "jitter") + facet_wrap(~SEX) + theme(axis.text.x=element_text(angle=70, size = 10, vjust=0.5))
 ```
 And this is the output:
-```{r, echo = TRUE}
-source("../02 Data Wrangling/Data_Wrangle1_jnw.R")
+```{r}
+source("../02 Data Wrangling/Data_Wrangle1_jnw.R", echo = TRUE)
 ```
-This plot looks at only the STI's chlamydia, gonorrhea, and HIV, for the years 2001-2014. There are two separate plots for males and females, and all of the counties in California are included.
+This plot looks at only the STI's chlamydia, gonorrhea, and HIV, for the years 2001-2014. There are two separate plots for males and females, and all of the counties in California are included. It is suggested that chlamydia has risen significantly over the years for both males and females, while gonorrhea and HIV have remained more steady, with gonorrhea rising slightly more than females over the years. It also appears that more females than males had chlamydia, but the numbers appeared about the same for the other two diseases.
 
+###Second plot:
+```{r}
+source("../02 Data Wrangling/Data_Wrangling_hys.R", echo=TRUE)
+```
