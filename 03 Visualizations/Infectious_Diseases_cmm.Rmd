@@ -1,7 +1,6 @@
-```Retrive plotted wrangled data from dataframe ```
 ```{r}
 source("../02 Data Wrangling/Data_Wrangling_cmm.R", echo=TRUE)
 ```
-```Print summary of Infectious Disease data```
 
-summary(df_A)
+The above plot displays the number of Scromboid Fish Poisoning and Paralytic Shellfish infections in California by county for years 2001-2014. For visual aesthetics, any county zero reported infections has been removed from the data plot. Our interest in these particular datas originated with an inquiry: Can we show that if a county is located closer to the coastline, then will that county have a higher number of Fish/Shellfish infections? Indeed, the plot shows Orange, San Diego, Los Angeles, and Santa Clara counties with highest reported cases of Scromboid and Paralytic Shellfish infections: all counties that lie on the coast of California. However, further investigation into Scromboid Fish Poisoning revealed that, "...the poisoning results from the consumption of inadequately preserved and improperly refridgerated fish" ("Histamine Toxicity From Fish". Birkun, Alexi). Curiously, the data plot has now generate a new inquiry: Why would counties closer to the ocean fail to preserve or refridgerate fish adequately? This data now becomes more interesting as a reasearch path and could be useful for government health organizations, county health officials, and restaurant or grocery saftey coordinators. 
+
