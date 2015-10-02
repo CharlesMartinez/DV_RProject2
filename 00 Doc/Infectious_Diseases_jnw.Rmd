@@ -103,3 +103,9 @@ This plot looks at only the STI's chlamydia, gonorrhea, and HIV, for the years 2
 ```{r}
 source("../02 Data Wrangling/Data_Wrangling_hys.R", echo=TRUE)
 ```
+
+###Third plot:  
+```{r}
+source("../02 Data Wrangling/Data_Wrangling_cmm.R", echo=TRUE)
+```
+
