@@ -1,10 +1,7 @@
----
-title: "Infectious_Diseases_cmm.Rmd"
-author: "cm"
-date: "October 1, 2015"
-output: html_document
----
+```Retrive plotted wrangled data from dataframe ```
 ```{r}
-source("../01 Data/INFECTIOUS_DISEASES_cm.R", echo=TRUE)
-summary(df_A)
+source("../02 Data Wrangling/Data_Wrangling_cmm.R", echo=TRUE)
 ```
+```Print summary of Infectious Disease data```
+
+summary(df_A)
