@@ -126,7 +126,7 @@ df_A <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?q
 
 This is the code that was used to generate the third plot:  
 ```
-df_A %>% select(DISEASE, COUNTY, COUNT) %>% filter(DISEASE == "Scombroid Fish Poisoning" & COUNT > 0 | DISEASE == "Paralytic Shellfish Poisoning" & COUNT > 0) %>% ggplot(aes(y = COUNTY, x = COUNT, color = DISEASE)) + ggtitle("Paralytic Shellfish and Scromboid Fish Poisonings in California") + geom_point(position = "jitter") 
+df_A %>% group_by(DISEASE, COUNTY, COUNT) %>% filter(DISEASE == "Scombroid Fish Poisoning" & COUNT > 0 | DISEASE == "Paralytic Shellfish Poisoning" & COUNT > 0) %>% ggplot(aes(y = COUNTY, x = COUNT, color = DISEASE)) + ggtitle("Paralytic Shellfish and Scromboid Fish Poisonings in California") + geom_point(position = "jitter") 
 ```
 And this is the output: 
 ```{r}
