@@ -1,30 +1,109 @@
 ---
-title: "Infectious Disease Cases by County, Year, and Sex from 2001 to 2014 "
-date: "September 28, 2015"
-author: Charles Martinez (cmm5627), Happy Situ (hys82), Jenna Webb (jnw653)
+title: "Infectious Disease Cases by County, Year, and Sex from 2001 to 2014"
+author: "Charles Martinez (cmm5627), Happy Situ (hys82), Jenna Webb (jnw653)"
+date: "September 30, 2015"
 output: html_document
 ---
-To retrieve the data from the database:
-```{r}
-source("../01 Data/Infectious_Diseases.R", echo = FALSE)
+
+For this project, we found a set of data that listed cases of different infectious dieases in various counties in California, as well as the total population of each county. It included how many males and females were infected per year, as well as the total number of infections per county per year.   
+
+This is the code that we used to be able to put the data into an Oracle database (ETL):  
+```
+setwd("C:/Users/jenna_000/Jennas_Stuff/UT/DataVisualization/DV_RProject2/01 Data")
+file_path <- "Infectious_Disease_Cases_by_County__Year__and_Sex__2001-2014.csv"
+df <- read.csv(file_path, stringsAsFactors = FALSE)
+
+# Replace "." (i.e., period) with "_" in the column names.
+names(df) <- gsub("\\.+", "_", names(df))
+
+str(df) # Uncomment this and  run just the lines to here to get column types to use for getting the list of measures.
+
+measures <- c("Year", "Count", "Population", "Rate", "CI_lower", "CI_upper")
+
+# Get rid of special characters in each column.
+# Google ASCII Table to understand the following:
+for(n in names(df)) {
+  df[n] <- data.frame(lapply(df[n], gsub, pattern="[^ -~]",replacement= ""))
+}
+dimensions <- setdiff(names(df), measures)
+if( length(measures) > 1 || ! is.na(dimensions)) {
+  for(d in dimensions) {
+    # Get rid of " and ' in dimensions.
+    df[d] <- data.frame(lapply(df[d], gsub, pattern="[\"']",replacement= ""))
+    # Change & to and in dimensions.
+    df[d] <- data.frame(lapply(df[d], gsub, pattern="&",replacement= " and "))
+    # Change : to ; in dimensions.
+    df[d] <- data.frame(lapply(df[d], gsub, pattern=":",replacement= ";"))
+  }
+}
+
+library(lubridate)
+
+# Get rid of all characters in measures except for numbers, the - sign, and period.dimensions
+if( length(measures) > 1 || ! is.na(measures)) {
+  for(m in measures) {
+    df[m] <- data.frame(lapply(df[m], gsub, pattern="[^--.0-9]",replacement= ""))
+  }
+}
+
+write.csv(df, paste(gsub(".csv", "", file_path), ".reformatted.csv", sep=""), row.names=FALSE, na = "")
+
+tableName <- gsub(" +", "_", gsub("[^A-z, 0-9, ]", "", gsub(".csv", "", file_path)))
+sql <- paste("CREATE TABLE", tableName, "(\n-- Change table_name to the table name you want.\n")
+if( length(measures) > 1 || ! is.na(dimensions)) {
+  for(d in dimensions) {
+    sql <- paste(sql, paste(d, "varchar2(4000),\n"))
+  }
+}
+if( length(measures) > 1 || ! is.na(measures)) {
+  for(m in measures) {
+    if(m != tail(measures, n=1)) sql <- paste(sql, paste(m, "number(38,4),\n"))
+    else sql <- paste(sql, paste(m, "number(38,4)\n"))
+  }
+}
+sql <- paste(sql, ");")
+cat(sql)
 ```
 
-Print out a summary of the Infectious Diseases database:
-```{r}
+Here is a summary of our data:  
+```{r, echo = FALSE}
+source("../01 Data/Infectious_Diseases.R")
 summary(df)
 ```
 
-Head of the dataframe:
+Here is a subset of our data:  
 ```{r}
 head(df)
 ```
 
+###First plot:
+For the first plot, this is what the call to the Oracle database looked like:  
+```
+df_jnw <- data.frame(fromJSON(getURL(URLencode('129.152.144.84:5001/rest/native/?query="select * from Infectious_Diseases where SEX = \'Female\' or SEX = \'Male\'"'),httpheader=c(DB='jdbc:oracle:thin:@129.152.144.84:1521/PDBF15DV.usuniversi01134.oraclecloud.internal', USER='cs329e_jnw653', PASS='orcl_jnw653', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
+```
+######Note that only the 'Male' and 'Female' sexes were included, and not 'Total'.
+
+This is the code that was used to generate the first plot:  
+```
+df_jnw %>% select(DISEASE, YEAR, COUNT, SEX) %>% filter(DISEASE == "Gonorrhea" | DISEASE == "Chlamydia" | DISEASE == "HIV") %>% ggplot(aes(x = YEAR, y = COUNT, color = DISEASE)) + geom_point(position = "jitter") + facet_wrap(~SEX) + theme(axis.text.x=element_text(angle=70, size = 10, vjust=0.5))
+```
+And this is the output:  
+```{r}
+source("../02 Data Wrangling/Data_Wrangle1_jnw.R", echo = TRUE)
+```
+  
+This plot looks at only the STI's chlamydia, gonorrhea, and HIV, for the years 2001-2014. There are two separate plots for males and females, and all of the counties in California are included. It is suggested that chlamydia has risen significantly over the years for both males and females, while gonorrhea and HIV have remained more steady, with gonorrhea rising slightly more than females over the years. It also appears that more females than males had chlamydia, but the numbers appeared about the same for the other two diseases.
+
+###Second plot:
 ```{r}
 source("../02 Data Wrangling/Data_Wrangling_hys.R", echo=TRUE)
 ```
 
+This plot is a plot of 6 particularly interesting diseases in the county of San Francisco. Notice that the number of males that were affected by Amebiasis, Campylobacteriosis, Giardiasis, and Tuberculosis were higher than the numbers of females that were affected. The first three disease mentioned are mainly caused by poor sanitary conditions. Notice that the count of these first three diseases have declined in recent year. This suggests recent and better sanitation efforts by the county of San Francisco. Pertussis, more commonly known as whooping cough, is a highly contagious, so it is not surprisingly that the count for Pertusis does not vary much between sexes. The data point for Salmonellosis the past two years are particularly interesting. From 2001 to 2012, the count for Salmonellosis did not very much between sexes. However, in 2013 and 2014, the data points are very peculiar. The count differs by over 50 (males with the higher count).
+
+###Third plot:  
 ```{r}
-source("../02 Data Wrangling/Data_Wrangle1_jnw.R", echo = TRUE)
+source("../02 Data Wrangling/Data_Wrangling_cmm.R", echo=TRUE)
 ```
 
-
+The above plot displays the number of Scromboid Fish Poisoning and Paralytic Shellfish infections in California by county for years 2001-2014. For visual aesthetics, any county zero reported infections has been removed from the data plot. Our interest in these particular datas originated with an inquiry: Can we show that if a county is located closer to the coastline, then will that county have a higher number of Fish/Shellfish infections? Indeed, the plot shows Orange, San Diego, Los Angeles, and Santa Clara counties with highest reported cases of Scromboid and Paralytic Shellfish infections: all counties that lie on the coast of California. However, further investigation into Scromboid Fish Poisoning revealed that, "...the poisoning results from the consumption of inadequately preserved and improperly refridgerated fish" ("Histamine Toxicity From Fish". Birkun, Alexi). Curiously, the data plot has now generate a new inquiry: Why would counties closer to the ocean fail to preserve or refridgerate fish adequately? This data now becomes more interesting as a reasearch path and could be useful for government health organizations, county health officials, and restaurant or grocery saftey coordinators. 
